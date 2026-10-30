@@ -98,8 +98,14 @@
   .bottombar { display: none; }
 
   /* ---------- Views ---------- */
-  .js .view { display: none; }
-  .js .view.active { display: block; animation: fade .3s ease; }
+  /* Tabs: only one section shows at a time.
+     Works without scripts (using the #link in the address bar), and scripts make it smoother. */
+  .view { display: none; scroll-margin-top: 140px; }
+  #intro { display: block; }
+  .view:target { display: block; }
+  main:has(.view:target) #intro:not(:target) { display: none; }
+  .js .view { display: none !important; }
+  .js .view.active { display: block !important; animation: fade .3s ease; }
   @keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
   @media (prefers-reduced-motion: reduce) { .view.active { animation: none; } * { transition: none !important; } }
   .section { padding: 48px 0 64px; }
@@ -116,6 +122,37 @@
   .hero-art { flex: 1 1 340px; min-width: 0; background: var(--ink); border-radius: 32px; padding: 26px; }
   .hero-art svg { display: block; width: 100%; height: auto; }
 
+  /* Intro extras */
+  .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 4px; }
+  .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+  .feature { background: var(--white); border: 1px solid var(--line); border-radius: var(--radius); padding: 22px 24px; display: flex; flex-direction: column; gap: 8px; }
+  .feature .ficon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; background: var(--blush); color: var(--berry); }
+  .feature .ficon svg { width: 22px; height: 22px; }
+  .feature h3 { font-size: 1.3rem; }
+  .feature p { margin: 0; color: var(--muted); font-size: 15px; }
+  .intro-block + .intro-block { margin-top: 56px; }
+  .tips { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+  .tipcard { background: var(--blush); border-radius: var(--radius); padding: 22px 24px; }
+  .tipcard h3 { font-size: 1.25rem; margin-bottom: 6px; }
+  .tipcard p, .tipcard ol { margin: 0; color: var(--ink-soft); font-size: 15px; }
+  .tipcard ol { padding-left: 20px; }
+  .tipcard li + li { margin-top: 4px; }
+  .cta-row { margin-top: 48px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 18px; padding: 28px 30px; border-radius: 28px; background: var(--ink); color: var(--cream); }
+  .cta-row h2 { font-size: clamp(1.6rem, 4vw, 2rem); color: var(--cream); }
+  .cta-row p { margin: 6px 0 0; color: #D9CBD0; }
+
+  /* Back to top */
+  .to-top {
+    position: fixed; right: max(20px, env(safe-area-inset-right, 0px)); bottom: 24px; z-index: 90;
+    width: 48px; height: 48px; border-radius: 50%; border: 0; cursor: pointer;
+    background: var(--berry); color: var(--white); box-shadow: 0 8px 22px rgba(142, 44, 72, 0.32);
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; transform: translateY(12px); pointer-events: none; transition: opacity .2s ease, transform .2s ease;
+  }
+  .to-top.show { opacity: 1; transform: none; pointer-events: auto; }
+  .to-top:hover { background: var(--berry-dark); }
+  .to-top svg { width: 22px; height: 22px; }
+
   /* Guide cards */
   .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
   .card {
@@ -128,6 +165,8 @@
   .card p { margin: 0; color: var(--muted); font-size: 15px; line-height: 1.55; }
   .card .meta { font-size: 13px; color: var(--muted); }
   .card .go { margin-top: auto; padding-top: 6px; font-weight: 600; color: var(--berry); }
+  .card .tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .tag-new { background: var(--gold); color: var(--ink); }
   .card-request { background: var(--blush); border-color: var(--blush); cursor: pointer; text-align: left; font: inherit; }
   .card-request p { color: var(--ink-soft); }
   .card-request .go { color: var(--ink); }
@@ -207,6 +246,11 @@
     .section { padding: 32px 0 44px; }
     .tip { padding: 28px 22px; }
     .tip .btn { flex: 1 1 100%; }
+    .hero-actions .btn { flex: 1 1 100%; }
+    .cta-row { padding: 24px 22px; }
+    .cta-row .btn { flex: 1 1 100%; }
+    .intro-block + .intro-block { margin-top: 40px; }
+    .to-top { bottom: calc(74px + env(safe-area-inset-bottom, 0px)); right: 16px; width: 46px; height: 46px; }
   }
 </style>
 </head>
@@ -217,7 +261,7 @@
 <header class="bar">
   <div class="wrap">
     <div class="brand-row">
-      <a class="brand" href="#guides" data-tab="guides" aria-label="The Reader's Atlas, home">
+      <a class="brand" href="#intro" data-tab="intro" aria-label="The Reader's Atlas, home">
         <svg viewBox="0 0 140 130" aria-hidden="true">
           <path d="M28 60 A46 46 0 1 0 112 60 A38 38 0 1 1 28 60 Z" fill="#8E2C48"/>
           <path d="M36 74 C48 68 60 69 70 76 C80 69 92 68 104 74 L104 100 C92 94 80 95 70 102 C60 95 48 94 36 100 Z" fill="#FFFAF6" stroke="#8E2C48" stroke-width="3"/>
@@ -232,24 +276,29 @@
     </div>
 
     <nav class="tabs" aria-label="Site sections">
-      <a href="#guides" data-tab="guides" aria-current="page">Guides</a>
+      <a href="#intro" data-tab="intro" aria-current="page">Intro</a>
       <a href="#how" data-tab="how">How it works</a>
+      <a href="#guides" data-tab="guides">Guides</a>
       <a href="#request" data-tab="request">Request a series</a>
       <a href="#follow" data-tab="follow">Follow</a>
     </nav>
   </div>
 </header>
 
-<main id="main">
+<main id="main" tabindex="-1" style="outline:none">
 
-<!-- ================= GUIDES ================= -->
-<section class="view active" id="guides">
+<!-- ================= INTRO ================= -->
+<section class="view active" id="intro">
   <div class="hero">
     <div class="wrap hero-inner">
       <div class="hero-text">
         <span class="tag">Free, spoiler-safe fan guides</span>
         <h1>Find every character. Follow every connection.</h1>
         <p class="lede">Interactive family trees, friend groups and connection maps for the book series you can't stop talking about.</p>
+        <div class="hero-actions">
+          <a class="btn btn-berry" href="#guides" data-tab="guides">Browse the guides</a>
+          <a class="btn btn-outline" href="#request" data-tab="request">Request a series</a>
+        </div>
       </div>
       <div class="hero-art" aria-hidden="true">
         <svg viewBox="0 0 480 300">
@@ -275,33 +324,53 @@
 
   <div class="section">
     <div class="wrap">
-      <div class="section-head">
-        <h2>Choose your world</h2>
-        <p>Tap a guide to open its interactive character map.</p>
+
+      <div class="intro-block">
+        <div class="section-head">
+          <h2>Inside every guide</h2>
+          <p>Each guide is built for the moment you stop mid-chapter and think, "wait, who is that again?"</p>
+        </div>
+        <div class="features">
+          <div class="feature"><span class="ficon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="5" r="2.5"/><circle cx="5" cy="19" r="2.5"/><circle cx="19" cy="19" r="2.5"/><path d="M12 7.5V12M5 16.5V12h14v4.5"/></svg></span><h3>Family trees</h3><p>Parents, siblings, partners and children, laid out generation by generation.</p></div>
+          <div class="feature"><span class="ficon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="6" r="2.5"/><circle cx="18" cy="8" r="2.5"/><circle cx="9" cy="18" r="2.5"/><path d="M8.5 6.2 15.5 7.6M6.6 8.4 8.4 15.6M16.6 10.1 10.6 16.2"/></svg></span><h3>Connections map</h3><p>Tap anyone to light up their friends, rivals, romances and allies.</p></div>
+          <div class="feature"><span class="ficon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/><path d="M4 4l16 16"/></svg></span><h3>Spoiler shield</h3><p>Tell a guide how far you've read and it blurs anything from later books. Tap to peek if you dare.</p></div>
+          <div class="feature"><span class="ficon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></span><h3>Search everything</h3><p>Every guide has its own search bar for characters, books, places and more.</p></div>
+          <div class="feature"><span class="ficon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5C6.5 4 9.5 4 12 5.5v14C9.5 18 6.5 18 4 19.5z"/><path d="M12 5.5C14.5 4 17.5 4 20 5.5v14c-2.5-1.5-5.5-1.5-8 0"/></svg></span><h3>Book guide &amp; order</h3><p>Every book in the series, who it's about, and the order to read them in.</p></div>
+          <div class="feature"><span class="ficon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18.5h2"/></svg></span><h3>Made for your phone</h3><p>Icons along the bottom to switch pages, so it's easy to check one-handed while you read.</p></div>
+        </div>
       </div>
-      <div class="cards">
-        <!-- To add a guide: copy one <a class="card"> block, then change the link, tag, title, author line and description. -->
-        <a class="card" href="Empyrean_Codex/">
-          <span class="tag">Romantasy</span>
-          <h3>The Empyrean Codex</h3>
-          <span class="meta">Rebecca Yarros · Fourth Wing · Iron Flame · Onyx Storm · Threshing Day</span>
-          <p>Dragons, riders, signets, family trees and a full connections map.</p>
-          <span class="go">Open the guide →</span>
-        </a>
-        <a class="card" href="briar-u/">
-          <span class="tag">Romance</span>
-          <h3>The Briar U Universe</h3>
-          <span class="meta">Elle Kennedy · Off-Campus · Briar U · Campus Diaries</span>
-          <p>Families, friend groups, timelines and who ends up with who.</p>
-          <span class="go">Open the guide →</span>
-        </a>
-        <a class="card card-request" href="#request" data-tab="request">
-          <span class="tag tag-berry">Coming next</span>
-          <h3>Your favourite series?</h3>
-          <p>Tell me which world to map next. Requests with a tip jump the queue.</p>
-          <span class="go">Request a series →</span>
-        </a>
+
+      <div class="intro-block">
+        <div class="section-head">
+          <h2>Good to know</h2>
+        </div>
+        <div class="tips">
+          <div class="tipcard">
+            <h3>Keep it on your home screen</h3>
+            <ol>
+              <li><b>iPhone:</b> tap Share, then <b>Add to Home Screen</b>.</li>
+              <li><b>Android:</b> tap the ⋮ menu, then <b>Add to Home screen</b>.</li>
+            </ol>
+          </div>
+          <div class="tipcard">
+            <h3>Your spoiler setting is saved</h3>
+            <p>Each guide remembers how far you've read on your device, so come back after your next chapter and pick up where you left off.</p>
+          </div>
+          <div class="tipcard">
+            <h3>Free, always</h3>
+            <p>Every guide is free. Tips on Ko-fi help cover hosting and the next book, and you can request the next series I map.</p>
+          </div>
+        </div>
       </div>
+
+      <div class="cta-row">
+        <div>
+          <h2>Ready to find your world?</h2>
+          <p>Pick a series and start exploring.</p>
+        </div>
+        <a class="btn btn-cream" href="#guides" data-tab="guides">Browse the guides</a>
+      </div>
+
     </div>
   </div>
 </section>
@@ -310,18 +379,55 @@
 <section class="view" id="how">
   <div class="section">
     <div class="wrap">
+        <div class="section-head">
+          <h2>How it works</h2>
+          <p>Every guide is built so you can check who's who mid-book without ruining what's coming.</p>
+        </div>
+        <div class="steps">
+          <div class="step"><span class="num">I</span><h3>Pick your series</h3><p>Every guide covers the whole series, book by book.</p></div>
+          <div class="step"><span class="num">II</span><h3>Set your spoiler level</h3><p>Choose how far you've read and the guide hides anything beyond it.</p></div>
+          <div class="step"><span class="num">III</span><h3>Explore the map</h3><p>Tap anyone to see their family, friends and rivals.</p></div>
+        </div>
+        <div class="note-box">
+          <h3>Each guide has its own look</h3>
+          <p>Every guide is designed to match the world it maps, so the Empyrean Codex feels like a war college archive and Briar U feels like a campus scrapbook. The search bar, spoiler button and bottom icons work the same way in all of them.</p>
+        </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= GUIDES ================= -->
+<section class="view" id="guides">
+  <div class="section">
+    <div class="wrap">
       <div class="section-head">
-        <h2>How it works</h2>
-        <p>Every guide is built so you can check who's who mid-book without ruining what's coming.</p>
+        <h2>Choose your world</h2>
+        <p>Tap a guide to open its interactive character map.</p>
       </div>
-      <div class="steps">
-        <div class="step"><span class="num">I</span><h3>Pick your series</h3><p>Every guide covers the whole series, book by book.</p></div>
-        <div class="step"><span class="num">II</span><h3>Explore the map</h3><p>Tap anyone to see their family, friends and rivals.</p></div>
-        <div class="step"><span class="num">III</span><h3>Stay spoiler-safe</h3><p>Tell the guide how far you've read and it blurs anything from later books.</p></div>
-      </div>
-      <div class="note-box">
-        <h3>Each guide has its own look</h3>
-        <p>Every guide is designed to match the world it maps, so the Empyrean Codex feels like a war college archive and Briar U feels like a campus scrapbook. The search bar and the icons at the bottom work the same way in all of them.</p>
+      <div class="cards">
+        <!-- To add a guide: copy one <a class="card"> block, then change the link, tags, title, author line and description.
+             Move the "New" tag to whichever guide is newest. -->
+        <a class="card" href="Acotar-codex/">
+          <span class="tags"><span class="tag">Romantasy</span><span class="tag tag-new">New</span></span>
+          <h3>The Prythian Codex</h3>
+          <span class="meta">Sarah J. Maas · A Court of Thorns and Roses series</span>
+          <p>The courts of Prythian, its High Lords, mates and the Inner Circle, all mapped.</p>
+          <span class="go">Open the guide →</span>
+        </a>
+        <a class="card" href="Empyrean_Codex/">
+          <span class="tags"><span class="tag">Romantasy</span></span>
+          <h3>The Empyrean Codex</h3>
+          <span class="meta">Rebecca Yarros · Fourth Wing · Iron Flame · Onyx Storm · Threshing Day</span>
+          <p>Dragons, riders, signets, family trees and a full connections map.</p>
+          <span class="go">Open the guide →</span>
+        </a>
+        <a class="card" href="briar-u/">
+          <span class="tags"><span class="tag">Romance</span></span>
+          <h3>The Briar U Universe</h3>
+          <span class="meta">Elle Kennedy · Off-Campus · Briar U · Campus Diaries</span>
+          <p>Families, friend groups, timelines and who ends up with who.</p>
+          <span class="go">Open the guide →</span>
+        </a>
       </div>
     </div>
   </div>
@@ -397,24 +503,29 @@
   </div>
 </footer>
 
+<button class="to-top" id="to-top" type="button" aria-label="Back to top">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+</button>
+
 <nav class="bottombar" aria-label="Site sections">
-  <a href="#guides" data-tab="guides" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5C6.5 4 9.5 4 12 5.5v14C9.5 18 6.5 18 4 19.5z"/><path d="M12 5.5C14.5 4 17.5 4 20 5.5v14c-2.5-1.5-5.5-1.5-8 0"/></svg><span>Guides</span></a>
+  <a href="#intro" data-tab="intro" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11.5 12 5l8 6.5V20h-5v-5h-6v5H4z"/></svg><span>Intro</span></a>
   <a href="#how" data-tab="how"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.3 2.4c-.5.2-.8.7-.8 1.2v.9"/><path d="M12 17h.01"/></svg><span>How</span></a>
+  <a href="#guides" data-tab="guides"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5C6.5 4 9.5 4 12 5.5v14C9.5 18 6.5 18 4 19.5z"/><path d="M12 5.5C14.5 4 17.5 4 20 5.5v14c-2.5-1.5-5.5-1.5-8 0"/></svg><span>Guides</span></a>
   <a href="#request" data-tab="request"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.2 5.8L20 11l-5.8 2.2L12 19l-2.2-5.8L4 11l5.8-2.2z"/></svg><span>Request</span></a>
   <a href="#follow" data-tab="follow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"/></svg><span>Follow</span></a>
 </nav>
 
 <script>
 /* Tab switching. The tabs are plain links, so the page still works if scripts are blocked. */
-const TAB_IDS = ['guides','how','request','follow'];
+const TAB_IDS = ['intro','how','guides','request','follow'];
 function show(tab, push){
-  if(!TAB_IDS.includes(tab)) tab = 'guides';
+  if(!TAB_IDS.includes(tab)) tab = 'intro';
   document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.id === tab));
   document.querySelectorAll('[data-tab]').forEach(a => {
     if(a.closest('nav')) a.toggleAttribute('aria-current', a.dataset.tab === tab);
     if(a.closest('nav') && a.dataset.tab === tab) a.setAttribute('aria-current', 'page');
   });
-  if(push){ try{ history.replaceState(null, '', tab === 'guides' ? location.pathname : '#' + tab); }catch(e){} }
+  if(push){ try{ history.replaceState(null, '', tab === 'intro' ? location.pathname : '#' + tab); }catch(e){} }
   window.scrollTo(0, 0);
 }
 document.addEventListener('click', e => {
@@ -424,7 +535,18 @@ document.addEventListener('click', e => {
   show(a.dataset.tab, true);
 });
 addEventListener('hashchange', () => show(location.hash.slice(1)));
-show(location.hash.slice(1) || 'guides');
+show(location.hash.slice(1) || 'intro');
+
+/* Back to top: appears once you've scrolled down a bit */
+const toTop = document.getElementById('to-top');
+const onScroll = () => toTop.classList.toggle('show', window.scrollY > 500);
+addEventListener('scroll', onScroll, {passive: true});
+onScroll();
+toTop.addEventListener('click', () => {
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  window.scrollTo({top: 0, behavior: reduce ? 'auto' : 'smooth'});
+  document.getElementById('main').focus({preventScroll: true});
+});
 document.getElementById('year').textContent = new Date().getFullYear();
 </script>
 </body>
