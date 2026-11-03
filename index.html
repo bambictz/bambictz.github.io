@@ -167,6 +167,8 @@
   .card .go { margin-top: auto; padding-top: 6px; font-weight: 600; color: var(--berry); }
   .card .tags { display: flex; flex-wrap: wrap; gap: 6px; }
   .tag-new { background: var(--gold); color: var(--ink); }
+  .tag-wip { background: transparent; color: var(--ink-soft); border: 1px dashed var(--muted); padding: 4px 12px; }
+  .card .wip { margin: 0; font-size: 13px; color: var(--ink-soft); background: var(--blush); border-radius: 10px; padding: 8px 10px; }
   .card-request { background: var(--blush); border-color: var(--blush); cursor: pointer; text-align: left; font: inherit; }
   .card-request p { color: var(--ink-soft); }
   .card-request .go { color: var(--ink); }
@@ -407,8 +409,16 @@
       <div class="cards">
         <!-- To add a guide: copy one <a class="card"> block, then change the link, tags, title, author line and description.
              Move the "New" tag to whichever guide is newest. -->
+        <a class="card" href="Maasverse/">
+          <span class="tags"><span class="tag">Romantasy</span><span class="tag tag-new">New</span><span class="tag tag-wip">Work in progress</span></span>
+          <h3>The Maasverse</h3>
+          <span class="meta">Sarah J. Maas · Throne of Glass · ACOTAR · Crescent City</span>
+          <p>Three worlds, one multiverse: every crossover, court, kingdom and recap, including A Court of Splintered Harmony.</p>
+          <p class="wip">This guide is a work in progress. New details are being added, so check back for updates.</p>
+          <span class="go">Open the guide →</span>
+        </a>
         <a class="card" href="elsie-silver-guide/">
-          <span class="tags"><span class="tag">Romance</span><span class="tag tag-new">New</span></span>
+          <span class="tags"><span class="tag">Romance</span></span>
           <h3>The Elsie Silver Reader's Guide</h3>
           <span class="meta">Elsie Silver · Chestnut Springs · Rose Hill · Gold Rush Ranch</span>
           <p>Small-town cowboys, families and found family, all connected.</p>
