@@ -451,9 +451,17 @@
              data-themes = the filter chips it shows under (romantasy, romance, paranormal, ya).
              data-keywords = extra search words (book titles, places, character names) that aren't already on the card.
              Move the "New" tag to whichever guide is newest. -->
+        <a class="card" href="maple-hills/" data-themes="romance"
+           data-keywords="maple hills hannah grace icebreaker wildfire daydream book 4 ucmh hockey figure skating college sports anastasia allen nate hawkins russ callahan aurora roberts henry turner halle jacobs titans">
+          <span class="tags"><span class="tag">Romance</span><span class="tag tag-new">New</span></span>
+          <h3>The Maple Hills Reader's Guide</h3>
+          <span class="meta">Hannah Grace · Icebreaker · Wildfire · Daydream</span>
+          <p>The UCMH hockey team, the skaters and everyone they love, with who's who and who ends up with who.</p>
+          <span class="go">Open the guide →</span>
+        </a>
         <a class="card" href="The-boys-of-tommen/" data-themes="romance"
            data-keywords="boys of tommen tommen college chloe walsh binding 13 keeping 13 saving 6 redeeming 6 taming 7 releasing 10 johnny kavanagh shannon lynch joey aoife gibsie claire lizzie hughie ballylaggin cork ireland irish rugby contemporary">
-          <span class="tags"><span class="tag">Romance</span><span class="tag tag-new">New</span></span>
+          <span class="tags"><span class="tag">Romance</span></span>
           <h3>The Boys of Tommen</h3>
           <span class="meta">Chloe Walsh · Binding 13 · Keeping 13 · Saving 6 · Redeeming 6 · Taming 7</span>
           <p>Tommen College, Ballylaggin and the rugby boys, with every family, friendship and couple connected.</p>
@@ -648,11 +656,14 @@ document.getElementById('year').textContent = new Date().getFullYear();
   cards.forEach(c => { c._text = ' ' + norm(c.textContent + ' ' + (c.dataset.keywords || '') + ' ' + (c.dataset.themes || '')) + ' '; });
   let theme = 'all';
   function apply(){
-    const words = norm(input.value).split(' ').filter(Boolean);
+    const q = norm(input.value);
+    const words = q.split(' ').filter(Boolean);
+    // If the whole phrase matches somewhere (e.g. "hannah grace"), show only those guides
+    const phrase = words.length > 1 && cards.some(c => c._text.includes(' ' + q));
     let shown = 0;
     cards.forEach(c => {
       const themeOk = theme === 'all' || (c.dataset.themes || '').split(' ').includes(theme);
-      const textOk = words.every(w => c._text.includes(' ' + w) || c._text.includes(w));
+      const textOk = phrase ? c._text.includes(' ' + q) : words.every(w => c._text.includes(w));
       c.hidden = !(themeOk && textOk);
       if(!c.hidden) shown++;
     });
