@@ -169,6 +169,25 @@
   .card .go { margin-top: auto; padding-top: 6px; font-weight: 600; color: var(--berry); }
   .card .tags { display: flex; flex-wrap: wrap; gap: 6px; }
   .tag-new { background: var(--gold); color: var(--ink); }
+
+  /* Bookshelf: three fanned covers per guide card */
+  .card { overflow: hidden; }
+  .shelf { position: relative; display: block; height: 168px; margin: -28px -28px 6px; overflow: hidden;
+    background: radial-gradient(circle at 50% 120%, color-mix(in srgb, var(--sc) 55%, #fff) 0, color-mix(in srgb, var(--sc) 22%, #fff) 70%); }
+  .shelf::after { content: ""; position: absolute; z-index: 3; left: 0; right: 0; bottom: 0; height: 14px; background: color-mix(in srgb, var(--sc) 30%, #fff); border-top: 2px solid color-mix(in srgb, var(--sc) 45%, #fff); box-shadow: 0 -4px 10px rgba(43,32,37,.12); }
+  .bk { position: absolute; bottom: 10px; left: 50%; width: 84px; height: 128px; border-radius: 3px 6px 6px 3px; overflow: hidden;
+    background: var(--c); box-shadow: 0 10px 20px rgba(43, 32, 37, .28), inset 3px 0 0 rgba(255,255,255,.18); transition: transform .25s ease; }
+  .bk:nth-child(1) { transform: translateX(-118%) rotate(-7deg); transform-origin: bottom right; }
+  .bk:nth-child(2) { transform: translateX(-50%) translateY(-6px); z-index: 2; width: 92px; height: 140px; }
+  .bk:nth-child(3) { transform: translateX(18%) rotate(7deg); transform-origin: bottom left; }
+  .card:hover .bk:nth-child(1) { transform: translateX(-126%) rotate(-10deg); }
+  .card:hover .bk:nth-child(2) { transform: translateX(-50%) translateY(-12px); }
+  .card:hover .bk:nth-child(3) { transform: translateX(26%) rotate(10deg); }
+  .bk .spine { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; padding: 8px; text-align: center;
+    font-family: 'Gloock', serif; font-size: 13px; line-height: 1.15; color: #fff; }
+  .bk img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .3s; }
+  .bk.has-img img { opacity: 1; }
+  @media (prefers-reduced-motion: reduce) { .bk, .bk img { transition: none; } }
   .card-request { background: var(--blush); border-color: var(--blush); cursor: pointer; text-align: left; font: inherit; }
   .card-request p { color: var(--ink-soft); }
   .card-request .go { color: var(--ink); }
@@ -450,11 +469,14 @@
       </div>
       <div class="cards" id="guide-cards">
         <!-- To add a guide: copy one <a class="card"> block, then change the link, tags, title, author line and description.
+             The shelf: --sc is the strip's colour; each .bk is one book (--c = spine colour if no cover loads,
+             data-srcs = cover images to try in order, separated by |, e.g. covers/my-book.jpg or an Open Library ISBN link).
              data-themes = the filter chips it shows under (romantasy, romance, paranormal, ya).
              data-keywords = extra search words (book titles, places, character names) that aren't already on the card.
              Move the "New" tag to whichever guide is newest. -->
         <a class="card" href="maple-hills/" data-themes="romance"
            data-keywords="maple hills hannah grace icebreaker wildfire daydream book 4 ucmh hockey figure skating college sports anastasia allen nate hawkins russ callahan aurora roberts henry turner halle jacobs titans">
+          <span class="shelf" style="--sc:#5a5fc4" aria-hidden="true"><span class="bk" style="--c:#c2486a" data-srcs="covers/maple-wf.jpg|https://covers.openlibrary.org/b/isbn/9781668026274-M.jpg?default=false|https://covers.openlibrary.org/b/isbn/9781398525719-M.jpg?default=false"><span class="spine">Wildfire</span></span><span class="bk" style="--c:#5a5fc4" data-srcs="covers/maple-ib.jpg|https://covers.openlibrary.org/b/isbn/9781668026038-M.jpg?default=false|https://covers.openlibrary.org/b/isbn/9781668026045-M.jpg?default=false"><span class="spine">Icebreaker</span></span><span class="bk" style="--c:#7656b8" data-srcs="covers/maple-dd.jpg|https://covers.openlibrary.org/b/isbn/9781668026250-M.jpg?default=false|https://covers.openlibrary.org/b/isbn/9781398525740-M.jpg?default=false"><span class="spine">Daydream</span></span></span>
           <span class="tags"><span class="tag">Romance</span><span class="tag tag-new">New</span></span>
           <h3>The Maple Hills Reader's Guide</h3>
           <span class="meta">Hannah Grace · Icebreaker · Wildfire · Daydream</span>
@@ -463,6 +485,7 @@
         </a>
         <a class="card" href="The-boys-of-tommen/" data-themes="romance"
            data-keywords="boys of tommen tommen college chloe walsh binding 13 keeping 13 saving 6 redeeming 6 taming 7 releasing 10 johnny kavanagh shannon lynch joey aoife gibsie claire lizzie hughie ballylaggin cork ireland irish rugby contemporary">
+          <span class="shelf" style="--sc:#13233a" aria-hidden="true"><span class="bk" style="--c:#5aa2d6" data-srcs="https://covers.openlibrary.org/b/isbn/9781728299976-M.jpg?default=false|https://covers.openlibrary.org/b/isbn/9780349439273-M.jpg?default=false"><span class="spine">Keeping 13</span></span><span class="bk" style="--c:#3b4fa8" data-srcs="covers/tommen-binding13.jpg|https://covers.openlibrary.org/b/isbn/9781728299945-M.jpg?default=false|https://covers.openlibrary.org/b/isbn/9780349439242-M.jpg?default=false"><span class="spine">Binding 13</span></span><span class="bk" style="--c:#c0563a" data-srcs="https://covers.openlibrary.org/b/isbn/9781464215995-M.jpg?default=false"><span class="spine">Saving 6</span></span></span>
           <span class="tags"><span class="tag">Romance</span></span>
           <h3>The Boys of Tommen</h3>
           <span class="meta">Chloe Walsh · Binding 13 · Keeping 13 · Saving 6 · Redeeming 6 · Taming 7</span>
@@ -472,6 +495,7 @@
         </a>
         <a class="card" href="twilight/" data-themes="paranormal ya romance"
            data-keywords="twilight new moon eclipse breaking dawn midnight sun life and death bree tanner bella swan edward cullen jacob black renesmee cullens volturi quileute wolf pack forks vampires werewolves saga">
+          <span class="shelf" style="--sc:#8e1b22" aria-hidden="true"><span class="bk" style="--c:#b4472a" data-srcs="https://covers.openlibrary.org/b/isbn/9780316160193-M.jpg?default=false"><span class="spine">New Moon</span></span><span class="bk" style="--c:#7a1419" data-srcs="https://covers.openlibrary.org/b/isbn/9780316160179-M.jpg?default=false"><span class="spine">Twilight</span></span><span class="bk" style="--c:#5a1430" data-srcs="https://covers.openlibrary.org/b/isbn/9780316160209-M.jpg?default=false"><span class="spine">Eclipse</span></span></span>
           <span class="tags"><span class="tag">Paranormal</span><span class="tag">Young adult</span></span>
           <h3>The Twilight Reader's Guide</h3>
           <span class="meta">Stephenie Meyer · The Twilight Saga</span>
@@ -481,6 +505,7 @@
         </a>
         <a class="card" href="Maasverse/" data-themes="romantasy"
            data-keywords="sjm maas multiverse throne of glass tog acotar a court of thorns and roses crescent city cc prythian erilea midgard celaena aelin rowan feyre rhysand bryce hunt fae reading order crossover">
+          <span class="shelf" style="--sc:#4a3a98" aria-hidden="true"><span class="bk" style="--c:#7a2d4a" data-srcs="https://covers.openlibrary.org/b/isbn/9781619634442-M.jpg?default=false"><span class="spine">A Court of Thorns and Roses</span></span><span class="bk" style="--c:#8a5a2b" data-srcs="https://covers.openlibrary.org/b/isbn/9781599906959-M.jpg?default=false"><span class="spine">Throne of Glass</span></span><span class="bk" style="--c:#2f6f7a" data-srcs="https://covers.openlibrary.org/b/isbn/9781635574043-M.jpg?default=false"><span class="spine">House of Earth and Blood</span></span></span>
           <span class="tags"><span class="tag">Romantasy</span></span>
           <h3>The Maasverse</h3>
           <span class="meta">Sarah J. Maas · Throne of Glass · ACOTAR · Crescent City</span>
@@ -489,6 +514,7 @@
         </a>
         <a class="card" href="elsie-silver-guide/" data-themes="romance"
            data-keywords="chestnut springs rose hill gold rush ranch rhodes ranch flawless heartless powerless reckless hopeless cowboy rodeo small town contemporary eatons">
+          <span class="shelf" style="--sc:#35546e" aria-hidden="true"><span class="bk" style="--c:#b0566a" data-srcs="https://covers.openlibrary.org/b/isbn/9780349437682-M.jpg?default=false|https://covers.openlibrary.org/b/isbn/9780349437699-M.jpg?default=false|https://covers.openlibrary.org/b/isbn/9781728297019-M.jpg?default=false"><span class="spine">Heartless</span></span><span class="bk" style="--c:#35546e" data-srcs="https://covers.openlibrary.org/b/isbn/9780349437668-M.jpg?default=false|https://covers.openlibrary.org/b/isbn/9780349437675-M.jpg?default=false|https://covers.openlibrary.org/b/isbn/9781728297002-M.jpg?default=false"><span class="spine">Flawless</span></span><span class="bk" style="--c:#3d7a4f" data-srcs="https://covers.openlibrary.org/b/isbn/9780349437705-M.jpg?default=false|https://covers.openlibrary.org/b/isbn/9781728297026-M.jpg?default=false"><span class="spine">Powerless</span></span></span>
           <span class="tags"><span class="tag">Romance</span></span>
           <h3>The Elsie Silver Reader's Guide</h3>
           <span class="meta">Elsie Silver · Chestnut Springs · Rose Hill · Gold Rush Ranch</span>
@@ -497,6 +523,7 @@
         </a>
         <a class="card" href="Acotar-codex/" data-themes="romantasy"
            data-keywords="acotar prythian a court of thorns and roses mist and fury wings and ruin frost and starlight silver flames sjm feyre rhysand tamlin nesta cassian azriel elain night court spring court high lords inner circle fae mates">
+          <span class="shelf" style="--sc:#4a2f7c" aria-hidden="true"><span class="bk" style="--c:#3a3f8a" data-srcs="https://covers.openlibrary.org/b/isbn/9781619634466-M.jpg?default=false"><span class="spine">A Court of Mist and Fury</span></span><span class="bk" style="--c:#9b3f52" data-srcs="https://covers.openlibrary.org/b/isbn/9781619634442-M.jpg?default=false"><span class="spine">A Court of Thorns and Roses</span></span><span class="bk" style="--c:#5a2f6e" data-srcs="https://covers.openlibrary.org/b/isbn/9781619634480-M.jpg?default=false"><span class="spine">A Court of Wings and Ruin</span></span></span>
           <span class="tags"><span class="tag">Romantasy</span></span>
           <h3>The Prythian Codex</h3>
           <span class="meta">Sarah J. Maas · A Court of Thorns and Roses series</span>
@@ -505,6 +532,7 @@
         </a>
         <a class="card" href="Empyrean_Codex/" data-themes="romantasy"
            data-keywords="empyrean fourth wing iron flame onyx storm threshing day basgiath navarre dragons riders signets violet sorrengail xaden riorson tairn andarna">
+          <span class="shelf" style="--sc:#2c4a86" aria-hidden="true"><span class="bk" style="--c:#7d2a1f" data-srcs="https://covers.openlibrary.org/b/isbn/9781649374172-M.jpg?default=false"><span class="spine">Iron Flame</span></span><span class="bk" style="--c:#24385e" data-srcs="https://covers.openlibrary.org/b/isbn/9781649374042-M.jpg?default=false"><span class="spine">Fourth Wing</span></span><span class="bk" style="--c:#3a2f5a" data-srcs="https://covers.openlibrary.org/b/isbn/9781649374189-M.jpg?default=false|https://covers.openlibrary.org/b/isbn/9781649377159-M.jpg?default=false|https://covers.openlibrary.org/b/isbn/9780349437064-M.jpg?default=false"><span class="spine">Onyx Storm</span></span></span>
           <span class="tags"><span class="tag">Romantasy</span></span>
           <h3>The Empyrean Codex</h3>
           <span class="meta">Rebecca Yarros · Fourth Wing · Iron Flame · Onyx Storm · Threshing Day</span>
@@ -513,6 +541,7 @@
         </a>
         <a class="card" href="briar-u/" data-themes="romance"
            data-keywords="off campus off-campus briar u briar university campus diaries the deal the mistake the score the goal the chase the risk the play the dare the graham effect hockey college sports garrett hannah logan grace">
+          <span class="shelf" style="--sc:#0e1b2c" aria-hidden="true"><span class="bk" style="--c:#6d2b3a" data-srcs="https://covers.openlibrary.org/b/isbn/9781775293941-M.jpg?default=false"><span class="spine">The Mistake</span></span><span class="bk" style="--c:#8c2f36" data-srcs="https://covers.openlibrary.org/b/isbn/9781775293934-M.jpg?default=false"><span class="spine">The Deal</span></span><span class="bk" style="--c:#3c4f7a" data-srcs="https://covers.openlibrary.org/b/isbn/9781775293958-M.jpg?default=false"><span class="spine">The Score</span></span></span>
           <span class="tags"><span class="tag">Romance</span></span>
           <h3>The Briar U Universe</h3>
           <span class="meta">Elle Kennedy · Off-Campus · Briar U · Campus Diaries</span>
@@ -643,6 +672,17 @@ toTop.addEventListener('click', () => {
   document.getElementById('main').focus({preventScroll: true});
 });
 document.getElementById('year').textContent = new Date().getFullYear();
+
+/* Bookshelf covers: try each source in turn (built-in first, then Open Library editions); if none load, the coloured spine stays */
+document.querySelectorAll('.shelf .bk').forEach(bk => {
+  const srcs = (bk.dataset.srcs || '').split('|').filter(Boolean);
+  if (!srcs.length) return;
+  const img = new Image(); let i = 0;
+  img.alt = ''; img.decoding = 'async';
+  img.onload = () => { if (img.naturalWidth > 20) bk.classList.add('has-img'); else img.onerror(); };
+  img.onerror = () => { i++; if (i < srcs.length) img.src = srcs[i]; else img.remove(); };
+  img.src = srcs[0]; bk.appendChild(img);
+});
 
 /* Guide finder: search by book, series, author or keyword, and filter by theme */
 (() => {
